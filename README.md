@@ -27,7 +27,7 @@ Dockerを使用して動作する、Cloud LaTeX風のWebベースLaTeXエディ�
    ![git_create](readme_images/git_create.png)
    リポジトリの名前は好きな名前にする． \
    Descriptionは説明なので適当に．無くてもいい． \
-   **Chose visibilityをPrivateにする！！！！**   **ここ大事!!!!!**  \
+   # Chose visibilityをPrivateにする！！！！ ここ大事!!!!  
    そうしないとうっかり全世界に公開することになる．\
    そこから下はいじらないでOK. \
    readme・gitignore・LICENSEの追加の欄なのでガン無視．
