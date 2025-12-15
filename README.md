@@ -1,7 +1,7 @@
 # Web LaTeX Editor
 
-Dockerを使用して動作する、Cloud LaTeX風のWebベースLaTeXエディタです。
-ファイルの編集、アップロード、画像の挿入、PDFのコンパイルとプレビューが可能です。
+Dockerを使用して動作する、Cloud LaTeX風のWebベースLaTeXエディタ
+ファイルの編集、アップロード、画像の挿入、PDFのコンパイルとプレビューが可能
 
 ## 必要条件
 
@@ -12,19 +12,19 @@ Dockerを使用して動作する、Cloud LaTeX風のWebベースLaTeXエディ�
 
 1.  gitをクローンする
     ```bash
-    git clone 
+    git clone https://github.com/Guch1120/Latex_local_docker.git
+    ```
 2.  gitブランチを作成する．ここ大事．これしないとgitで管理されるのが人のと混ざってしまう．
     ブランチ名はお好きに．
     ```bash
     git checkout -b  好きなブランチ名
     ```
-3.  以下のコマンドを実行してコンテナをビルド・起動.
-
+3.  以下のコマンドを実行してコンテナをビルド・起動
     ```bash
     docker compose up -d --build
     ```
 
-4.  ブラウザで [http://localhost:8000](http://localhost:8000) にアクセス.
+4.  ブラウザで [http://localhost:8000](http://localhost:8000) にアクセス
 ## 使い方
 
 ### 画面構成
