@@ -1,0 +1,9 @@
+services:
+  latex:
+    container_name: latex-editor
+    build: .
+    volumes:
+      - .:/workdir
+    ports:
+      - "8000:8000"
+    tty: true

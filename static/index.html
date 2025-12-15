@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web LaTeX Editor</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/stex/stex.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar: File Explorer -->
+        <div class="sidebar">
+            <h3>Files <button onclick="triggerUpload()"
+                    style="float: right; font-size: 0.8em; cursor: pointer;">+</button></h3>
+            <input type="file" id="file-upload" style="display: none;" onchange="uploadFile(this)">
+            <ul id="file-list"></ul>
+        </div>
+
+        <!-- Editor: CodeMirror -->
+        <div class="editor-container">
+            <div class="toolbar">
+                <span id="current-file">No file selected</span>
+                <div>
+                    <button onclick="triggerInsertImage()" style="background-color: #9b59b6;">Insert Image</button>
+                    <input type="file" id="image-insert" style="display: none;" accept="image/*"
+                        onchange="insertImage(this)">
+                    <button onclick="saveFile()" id="save-btn">Save (Ctrl+S)</button>
+                    <button onclick="compileLatex()" id="compile-btn">Compile</button>
+                    <button onclick="toggleLogs()" id="log-btn" style="background-color: #7f8c8d;">Logs</button>
+                </div>
+            </div>
+            <textarea id="code-editor"></textarea>
+            <div id="log-container"
+                style="height: 150px; background: #222; color: #fff; overflow: auto; font-family: monospace; font-size: 12px; padding: 10px; display: none; border-top: 1px solid #444;">
+                <div
+                    style="display: flex; justify-content: space-between; position: sticky; top: 0; background: #222; padding-bottom: 5px; border-bottom: 1px solid #444;">
+                    <span>Compilation Log</span>
+                    <button onclick="toggleLogs()"
+                        style="cursor: pointer; background: transparent; border: none; color: #aaa;">▼</button>
+                </div>
+                <pre id="log-content" style="margin: 0; white-space: pre-wrap;"></pre>
+            </div>
+        </div>
+
+        <!-- Preview: PDF Viewer -->
+        <div class="preview-container">
+            <iframe id="pdf-preview" src=""></iframe>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
