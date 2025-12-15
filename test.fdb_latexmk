@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1765823227.9496 "test.tex" "test.pdf" "test" 1765823228.74003 0
+["pdflatex"] 1765823626.40664 "test.tex" "test.pdf" "test" 1765823627.16588 0
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/haranoaji/HaranoAjiGothic-Medium.otf" 1755461869 4760392 2b663d1fb7e2425c94926535198454fc ""
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/haranoaji/HaranoAjiMincho-Regular.otf" 1755461869 6422896 22a59bd5a758ac1dcb12a9a2dc5e5242 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf" 1255129361 111536 ae9d1b331000d544f47e5223081b7b54 ""
@@ -148,8 +148,8 @@
   "/usr/local/texlive/2025/texmf-var/luatexja/ltj-jisx0208.luc" 1765821959.70918 93919 1f6dc76354e6e3b148c06f9f9254f22e ""
   "/usr/local/texlive/2025/texmf-var/luatexja/ltj-kinsoku_default.luc" 1765821957.39414 17654 e3e3c85f63c77f4caa824d338e2428e0 ""
   "/usr/local/texlive/2025/texmf-var/web2c/luahbtex/lualatex.fmt" 1765646081 5657724 d090afd886a0572c04bf12171b90b2c1 ""
-  "test.aux" 1765823228.635 132 614d64e44293cdbfb1b9c3a57d0bad96 "pdflatex"
-  "test.tex" 1765823227.88802 293 a74f43216363a911120fd4a8863f0890 ""
+  "test.aux" 1765823627.06187 132 614d64e44293cdbfb1b9c3a57d0bad96 "pdflatex"
+  "test.tex" 1765823626.33188 303 e4166fd6c08ddc7d814e0ab8cd790add ""
   (generated)
   "test.aux"
   "test.log"

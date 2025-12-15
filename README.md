@@ -10,21 +10,44 @@ Dockerを使用して動作する、Cloud LaTeX風のWebベースLaTeXエディ�
 
 ## セットアップと起動方法
 
-1.  gitをクローンする
+1.  gitクローンではなくzipファイルとしてダウンロード． \
+    緑色のcodeボタンを押すと画像のような一覧が出てくるから下のzip downloadを選択．
+![how_to_zip_download](readme_images/how_to_zip_download.png)
+
+2. ファイルマネージャからzipファイルを解凍．
+3. ターミナルを開いて解凍したディレクトリに移動．
+4. そこでgitの設定を始める
     ```bash
-    git clone https://github.com/Guch1120/Latex_local_docker.git
+    git init
     ```
-2.  gitブランチを作成する．ここ大事．これしないとgitで管理されるのが人のと混ざってしまう． \
-    ブランチ名はお好きに
-    ```bash
-    git checkout -b  好きなブランチ名
-    ```
-3.  以下のコマンドを実行してコンテナをビルド・起動
+5. gitの設定をしておく．参考は[Qiita](https://qiita.com/folivora/items/763d06b26bafd573a456). \
+   この記事の5-5のコミットまででいい．
+6. 自分のgithubのページを開いてRepositoriesに移動する． \
+   右上の緑色のNewボタンを押す
+   ![git_create](readme_images/git_create.png)
+   リポジトリの名前は好きな名前にする． \
+   Descriptionは説明なので適当に．無くてもいい． \
+   **Chose visibilityをPrivateにする！！！！**   **ここ大事!!!!!**  \
+   そうしないとうっかり全世界に公開することになる．\
+   そこから下はいじらないでOK. \
+   readme・gitignore・LICENSEの追加の欄なのでガン無視．
+   <details>
+   <summary>これらが気になるのなら</summary>
+
+   - readmeは説明
+   - gitignoreはgitに上げないファイルの一覧設定
+   - LICENSEは著作権に関するファイル．オープンソースにしない限り基本無関係．
+   
+   </details>
+
+    ![create_repo](readme_images/create_repo.png)
+
+7. ここまでできたらgitの準備は完了．あとはdocker環境を立ち上げるだけ．
+8. 以下のコマンドを実行してコンテナをビルド・起動
     ```bash
     docker compose up -d --build
     ```
-
-4.  ブラウザで [http://localhost:8000](http://localhost:8000) にアクセス
+9.ブラウザで [http://localhost:8000](http://localhost:8000) にアクセス
 ## 使い方
 
 ### 画面構成
