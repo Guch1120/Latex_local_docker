@@ -5,55 +5,383 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web LaTeX Editor</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="/static/style.css">
-    <!-- CodeMirror -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/stex/stex.min.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <!-- Sidebar: File Explorer -->
-        <div class="sidebar">
-            <h3>Files <button onclick="triggerUpload()"
-                    style="float: right; font-size: 0.8em; cursor: pointer;">+</button></h3>
-            <input type="file" id="file-upload" style="display: none;" onchange="uploadFile(this)">
-            <ul id="file-list"></ul>
+                <div class="sidebar">
+            <div class="sidebar-tabs">
+                <button onclick="showSidebarTab('files-tab')" class="tab-btn active" id="files-tab-btn">
+                    <i class="fas fa-files"></i> Files
+                </button>
+                <button onclick="showSidebarTab('outline-tab')" class="tab-btn" id="outline-tab-btn">
+                    <i class="fas fa-list-ul"></i> Outline
+                </button>
+            </div>
+
+            <div id="files-tab" class="sidebar-tab-content" oncontextmenu="showFilesTabContextMenu(event)">
+                <h3>Files
+                    <span class="file-actions">
+                        <i class="fas fa-file-circle-plus" onclick="createFilePrompt()" title="New File"></i>
+                        <i class="fas fa-upload" onclick="triggerUpload()" title="Upload File"></i>
+                        <i class="fas fa-trash" onclick="deleteCurrentFile()" title="Delete Selected File"></i>
+                    </span>
+                </h3>
+                <div style="margin-bottom: 5px; font-size: 11px; color: var(--text-muted); padding: 0 8px;">
+                    <label style="display: flex; align-items: center; gap: 4px;">
+                        <input type="checkbox" id="show-hidden-files" onchange="loadFiles()">
+                        Show Hidden
+                    </label>
+                </div>
+                <input type="file" id="file-upload" style="display: none;" onchange="uploadFile(this)">
+                <ul id="file-list"></ul>
+            </div>
+
+            <div id="outline-tab" class="sidebar-tab-content" style="display: none;">
+                <h3>Outline</h3>
+                <ul id="outline-list"></ul>
+            </div>
         </div>
 
-        <!-- Editor: CodeMirror -->
-        <div class="editor-container">
+                <div class="editor-container">
             <div class="toolbar">
-                <span id="current-file">No file selected</span>
-                <div>
-                    <button onclick="triggerInsertImage()" style="background-color: #9b59b6;">Insert Image</button>
+                <div id="current-file" title="No file selected">
+                    <i class="far fa-file"></i> <span>No file selected</span>
+                </div>
+
+                <div class="toolbar-group">
+                    <button onclick="triggerInsertSubsection()" title="Subsection"><i class="fas fa-heading"></i>
+                        +Subsec</button>
+                    <button onclick="triggerInsertImage()" title="Image"><i class="far fa-image"></i> Image</button>
                     <input type="file" id="image-insert" style="display: none;" accept="image/*"
                         onchange="insertImage(this)">
-                    <button onclick="saveFile()" id="save-btn">Save (Ctrl+S)</button>
-                    <button onclick="compileLatex()" id="compile-btn">Compile</button>
-                    <button onclick="toggleLogs()" id="log-btn" style="background-color: #7f8c8d;">Logs</button>
+
+                    <button onclick="triggerInsertSideBySide()" title="Side-by-Side"><i class="fas fa-columns"></i>
+                        Side</button>
+                    <input type="file" id="side-by-side-insert" style="display: none;" accept="image/*" multiple
+                        onchange="insertSideBySide(this)">
+
+                    <button onclick="showCitationModal()" title="Citations"><i class="fas fa-quote-right"></i>
+                        Cite</button>
+                    <button onclick="showTableModal()" title="Table"><i class="fas fa-table"></i> Table</button>
+                    <button onclick="showListModal()" title="List"><i class="fas fa-list-ol"></i> List</button>
+                    <button onclick="showRefModal()" title="Add Reference"><i class="fas fa-book"></i> +Ref</button>
+                    <button onclick="showEquationModal()" title="Equation"><i class="fas fa-square-root-variable"></i>
+                        Eq</button>
+                    <button onclick="insertNewPage()" title="New Page"><i class="fas fa-file-export"></i> +Page</button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button onclick="toggleSearchPanel(true)" title="Search and Replace"><i class="fas fa-search"></i>
+                        Search</button>
+                    <div class="compile-controls">
+                        <button onclick="saveFile()" id="save-btn"><i class="far fa-save"></i> Save</button>
+
+                        <label title="Auto Save">
+                            <input type="checkbox" id="auto-save-check" checked>
+                            <i class="fas fa-sync-alt" style="font-size: 10px;"></i>
+                            <span>Auto Save</span>
+                        </label>
+                        <label title="Auto Compile">
+                            <input type="checkbox" id="auto-compile-check" checked>
+                            <i class="fas fa-magic" style="font-size: 10px;"></i>
+                            <span>Auto Compile</span>
+                        </label>
+                        <button onclick="setAsMainFile()" id="set-main-btn" title="Set as Main File"><i
+                                class="fas fa-thumbtack"></i> Set Main</button>
+                        <label title="Compile Main File">
+                            <input type="checkbox" id="compile-main-check" checked>
+                            <span id="main-file-label">(None)</span>
+                        </label>
+                        <button onclick="compileLatex()" id="compile-btn"><i class="fas fa-play"></i> Compile</button>
+                        <button onclick="toggleLogs()" id="log-btn" style="background-color: var(--bg-card);"
+                            title="Show Logs"><i class="fas fa-terminal"></i> Logs</button>
+                    </div>
                 </div>
             </div>
+
+            <div id="search-panel" class="search-panel" style="display: none;">
+                <input id="search-input" type="text" placeholder="Search" oninput="runSearch()">
+                <input id="replace-input" type="text" placeholder="Replace">
+                <span id="search-status">0/0</span>
+                <button onclick="findPrevious()">Prev</button>
+                <button onclick="findNext()">Next</button>
+                <button onclick="replaceCurrent()">Replace</button>
+                <button onclick="replaceAll()">All</button>
+                <button onclick="toggleSearchPanel(false)">Close</button>
+            </div>
+
             <textarea id="code-editor"></textarea>
-            <div id="log-container"
-                style="height: 150px; background: #222; color: #fff; overflow: auto; font-family: monospace; font-size: 12px; padding: 10px; display: none; border-top: 1px solid #444;">
-                <div
-                    style="display: flex; justify-content: space-between; position: sticky; top: 0; background: #222; padding-bottom: 5px; border-bottom: 1px solid #444;">
-                    <span>Compilation Log</span>
-                    <button onclick="toggleLogs()"
-                        style="cursor: pointer; background: transparent; border: none; color: #aaa;">▼</button>
+
+            <div id="log-container">
+                <div class="log-toolbar">
+                    <span>Build Logs</span>
+                    <div>
+                        <button onclick="copyLogs()" title="Copy Logs"><i class="far fa-copy"></i></button>
+                        <button onclick="toggleLogs()"><i class="fas fa-times"></i></button>
+                    </div>
                 </div>
-                <pre id="log-content" style="margin: 0; white-space: pre-wrap;"></pre>
+                <div id="troubleshooting-guide" style="display: none; background: rgba(231, 76, 60, 0.1); border-left: 4px solid var(--error); padding: 12px; margin: 10px; font-size: 13px; color: var(--text-main); line-height: 1.5; border-radius: 4px;">
+                    <strong style="color: var(--error);"><i class="fas fa-exclamation-triangle"></i> コンパイルエラーが発生しました</strong><br>
+                    以下の点を確認してください：
+                    <ul style="margin-top: 5px; margin-bottom: 0; padding-left: 20px;">
+                        <li><strong>文法エラー:</strong> 下部のログにある <code>! LaTeX Error:</code> や <code>! Undefined control sequence.</code> を確認し、該当行のタグ修正や全角スペースの混入がないか確認してください。</li>
+                        <li><strong>画像が見つからない:</strong> <code>File `...' not found.</code> の場合、画像が正しくアップロードされているか、パスが合っているか確認してください。</li>
+                        <li><strong>数式エラー:</strong> <code>$</code> の閉じ忘れや、<code>&</code> や <code>\\</code> の記述ミスがないか確認してください。</li>
+                    </ul>
+                </div>
+                <pre id="log-content"></pre>
             </div>
         </div>
 
-        <!-- Preview: PDF Viewer -->
-        <div class="preview-container">
+                <div id="resizer" class="resizer"></div>
+
+                <div class="preview-container">
             <iframe id="pdf-preview" src=""></iframe>
         </div>
     </div>
+
+        <div id="citation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-quote-right"></i> Citations</h2>
+                <span class="close" onclick="closeModal('citation-modal')">&times;</span>
+            </div>
+            <div id="citation-list"></div>
+        </div>
+    </div>
+
+        <div id="input-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 id="modal-title">Create Table</h2>
+                <span class="close" onclick="closeModal('input-modal')">&times;</span>
+            </div>
+            <div id="modal-body">
+                <div id="table-inputs" class="modal-inputs">
+                    <div class="input-row">
+                        <span>Rows:</span> <input type="number" id="table-rows" value="3" min="1" max="20">
+                    </div>
+                    <div class="input-row">
+                        <span>Cols:</span> <input type="number" id="table-cols" value="3" min="1" max="10">
+                    </div>
+                </div>
+                <div id="list-inputs" style="display: none;" class="modal-inputs">
+                    <div class="input-row">
+                        <span>Items:</span> <input type="number" id="list-items" value="3" min="1" max="20">
+                    </div>
+                    <div class="input-row">
+                        <span>Type:</span>
+                        <select id="list-type">
+                            <option value="itemize">箇条書き (丸点)</option>
+                            <option value="enumerate">番号付きリスト</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="ref-inputs" style="display: none;" class="modal-inputs">
+                    <div class="input-group">
+                        <label>文献の種類</label>
+                        <select id="ref-type" onchange="updateRefFields()">
+                            <option value="article">論文 (@article)</option>
+                            <option value="misc">Webサイト・その他 (@misc)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Title</label>
+                        <input type="text" id="ref-title" placeholder="タイトル (必須)">
+                    </div>
+                    <div class="input-group">
+                        <label>Author(s)</label>
+                        <input type="text" id="ref-author" placeholder="著者名 (例: Yamada, Taro and Sato, Hanako)">
+                    </div>
+
+                                        <div id="ref-article-fields">
+                        <div class="input-group">
+                            <label>Journal</label>
+                            <input type="text" id="ref-journal" placeholder="学会誌・雑誌名">
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <div class="input-group" style="flex: 1;">
+                                <label>Vol.</label>
+                                <input type="text" id="ref-volume" placeholder="巻">
+                            </div>
+                            <div class="input-group" style="flex: 1;">
+                                <label>No.</label>
+                                <input type="text" id="ref-number" placeholder="号">
+                            </div>
+                            <div class="input-group" style="flex: 2;">
+                                <label>Pages</label>
+                                <input type="text" id="ref-pages" placeholder="123-145">
+                            </div>
+                        </div>
+                    </div>
+
+                                        <div id="ref-misc-fields" style="display: none;">
+                        <div class="input-group">
+                            <label>URL</label>
+                            <input type="text" id="ref-url" placeholder="https://...">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <div class="input-group" style="flex: 1;">
+                            <label>Year</label>
+                            <input type="text" id="ref-year" placeholder="2024">
+                        </div>
+                        <div class="input-group" style="flex: 2;">
+                            <label>Cite Key</label>
+                            <input type="text" id="ref-key" placeholder="省略で自動生成">
+                        </div>
+                    </div>
+                </div>
+                <div id="equation-inputs" style="display: none;" class="modal-inputs">
+                    <div class="input-group">
+                        <label>Type</label>
+                        <select id="equation-type">
+                            <option value="equation">番号付き数式 (equation)</option>
+                            <option value="align">揃え数式 (align - 複数行)</option>
+                            <option value="cases">条件分岐 (cases)</option>
+                            <option value="inline">インライン数式 ($...$)</option>
+                            <option value="display">別行立て数式 (\[...\])</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 16px;">
+                    <div id="modal-tips-container">
+                        <div id="tip-table" class="modal-tip" style="display: none;">
+                            <strong>使い方例:</strong><br>
+                            <code>A & B & C \\</code><br>
+                            の各記号の間に文字を入れます。<code>&</code> が列の区切り、<code>\\</code> が改行です。
+                        </div>
+                        <div id="tip-list" class="modal-tip" style="display: none;">
+                            <strong>使い方例:</strong><br>
+                            <code>\item ここに項目を入力</code><br>
+                            のように、各 <code>\item</code> の後ろに内容を書いてください。
+                        </div>
+                        <div id="tip-ref" class="modal-tip" style="display: none;">
+                            <strong>使い方:</strong> 文中で <code>\cite{key}</code> として参照。定義（<code>@misc{...}</code>等）は
+                            <strong>.bib ファイル</strong>の一番下に追加してください。
+                        </div>
+                        <div id="tip-equation-detail" class="modal-tip" style="display: none;">
+                                                    </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <button id="modal-confirm-btn" class="primary-btn">Insert</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <style>
+        .modal-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-tip {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px;
+            border-left: 3px solid var(--primary);
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        .modal-tip strong {
+            color: var(--text-main);
+        }
+
+        .modal-inputs input,
+        .modal-inputs select {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .modal-inputs input[type="number"] {
+            width: 80px;
+        }
+
+        .primary-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .primary-btn:hover {
+            background-color: var(--primary-hover);
+        }        .citation-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+
+        .citation-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .citation-key {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .citation-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+    </style>
+
+    <div id="file-context-menu" class="context-menu">
+        <button onclick="createFilePrompt()"><i class="fas fa-file-circle-plus"></i> New File</button>
+        <button onclick="triggerUpload()"><i class="fas fa-upload"></i> Upload</button>
+        <button onclick="renameCurrentFile()" data-needs-file><i class="fas fa-pen"></i> Rename</button>
+        <button onclick="deleteCurrentFile()" data-needs-file><i class="fas fa-trash"></i> Delete</button>
+    </div>
+
     <script src="/static/script.js"></script>
 </body>
 
