@@ -1,6 +1,5 @@
 services:
   latex:
-    container_name: latex-editor
     build: .
     volumes:
       - .:/workdir
