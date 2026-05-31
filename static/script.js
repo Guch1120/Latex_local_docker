@@ -9,6 +9,7 @@ let resizer, editorContainer, previewContainer;
 
 document.addEventListener('DOMContentLoaded', () => {
     updateMainFileLabel();
+    restoreSidebarState();
     document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
@@ -18,12 +19,30 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             toggleSearchPanel(true);
         }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            toggleSidebar();
+        }
     });
     document.addEventListener('click', hideFileContextMenu);
     document.addEventListener('scroll', hideFileContextMenu, true);
 
     loadFiles();
 });
+
+function restoreSidebarState() {
+    const collapsed = localStorage.getItem('latex_sidebar_collapsed') === 'true';
+    document.body.classList.toggle('sidebar-collapsed', collapsed);
+}
+
+function toggleSidebar() {
+    const collapsed = !document.body.classList.contains('sidebar-collapsed');
+    document.body.classList.toggle('sidebar-collapsed', collapsed);
+    localStorage.setItem('latex_sidebar_collapsed', String(collapsed));
+    setTimeout(() => {
+        if (editor) editor.refresh();
+    }, 220);
+}
 
 window.onload = () => {
     editorContainer = document.querySelector('.editor-container');

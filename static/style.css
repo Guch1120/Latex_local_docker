@@ -52,6 +52,41 @@ html {
     flex-direction: column;
     flex-shrink: 0;
     z-index: 10;
+    position: relative;
+    transition: width 0.2s ease;
+    overflow: hidden;
+}
+
+.sidebar-toggle {
+    width: 28px;
+    height: 28px;
+    margin: 8px 8px 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+    background-color: var(--border);
+}
+
+body.sidebar-collapsed .sidebar {
+    width: 44px;
+}
+
+body.sidebar-collapsed .sidebar-tabs,
+body.sidebar-collapsed .sidebar-tab-content {
+    display: none;
+}
+
+body.sidebar-collapsed .sidebar-toggle {
+    margin: 8px 8px 4px;
 }
 
 .sidebar h3 {
